@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Folder" max_length="40" name="x_teth_doc_folder" type="collection">
+        <element label="Name" max_length="40" name="name" type="string"/>
+        <element label="Parent" max_length="32" name="parent" reference="x_teth_doc_folder" type="reference"/>
+        <index name="index">
+            <element name="parent"/>
+        </index>
+    </element>
+</database>

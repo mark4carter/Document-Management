@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_scope_privilege">
+    <sys_scope_privilege action="INSERT_OR_UPDATE">
+        <operation>read</operation>
+        <source_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</source_scope>
+        <status>allowed</status>
+        <sys_class_name>sys_scope_privilege</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-03 12:22:19</sys_created_on>
+        <sys_id>1c1b416a131c4300acc157b32244b0eb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_teth_crm_quote</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_scope_privilege_1c1b416a131c4300acc157b32244b0eb</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-03 12:22:19</sys_updated_on>
+        <target_name>x_teth_crm_quote</target_name>
+        <target_scope display_value="TP13 - Customer Relationship Management">d0076b600fd90200cfaf059ce1050ef9</target_scope>
+        <target_type>sys_db_object</target_type>
+    </sys_scope_privilege>
+</record_update>

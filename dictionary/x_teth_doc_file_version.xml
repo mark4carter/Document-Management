@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="File Version" max_length="40" name="x_teth_doc_file_version" type="collection">
+        <element label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="File" max_length="32" name="file" reference="x_teth_doc_file" type="reference"/>
+        <index name="index">
+            <element name="file"/>
+        </index>
+    </element>
+</database>

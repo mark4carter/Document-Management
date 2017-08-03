@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, spUtil, nowAttachmentHandler, snRecordWatcher, $window) {
+	
+  /* widget controller */
+  var c = this;
+	
+	c.breadCrumbs = [];
+  $scope.attachmentHandler = new nowAttachmentHandler(setAttachments, appendError);
+	console.dir($scope.attachmentHandler);
+	
+	var tableName = "";
+	var recordID = "";
+	
+	$scope.currentSelectedFolder = {};
+	$scope.currentSelectedFolder.parentID = "Home";
+	//  var currentCrumbIndex = c.breadCrumbs.length - 1;
+	//  c.breadCrumbs[currentCrumbIndex]  <-- shows current Folder
+	
+	$scope.data.action = "";
+	$scope.loadingMessage = "";
+	
+	$scope.$watch('data.action', function() {
+		if ($scope.data.action == "added") {
+			$("#loadingModal").modal('hide');		
+			$scope.data.action = "";
+		}
+	});
+		
+	if (c.data) {
+		console.log(c.data);
+	}
+	
+	//--------------------------------------
+	//!  Evaluate URL Parameters if any
+	//-------------------------------------
+	try {
+		var windowParams = window.location.href;
+
+		
+		if (windowParams.includes("tn=")) {			
+			tableName = windowParams.split("tn");
+			tableName = tableName[1].split("&");
+			tableName = tableName[0].substring(1);
+			
+			recordID = windowParams.split("rid");
+			recordID = recordID[1].split("&");
+			recordID = recordID[0].substring(1);
+			
+			initialPathObj = {};
+			initialPathObj.tableName = tableName;
+			initialPathObj.recordID = recordID;
+			
+			
+			c.server.get({ initialPath : initialPathObj }).then(function(r) {
+				c.data.foldersTree = r.data.foldersTree;
+				c.breadCrumbs = r.data.newCrumbs;				
+				$scope.currentSelectedFolder.parentID = r.data.currentSelectedFolder.sys_id;				
+			})
+		}
+	} catch(e) {
+		console.log(e);
+	}
+		
+	c.traverseCrumb = function(crumb, index) {
+		c.breadCrumbs.splice(index + 1);
+		$scope.currentSelectedFolder.parentID = crumb.sys_id;
+	}
+	
+	
+	c.sendHome = function() {
+			c.breadCrumbs = [];
+			$scope.currentSelectedFolder.parentID = "Home";
+	}
+	
+	c.showIt = function(childFile) {		
+		  if (childFile.type == "x_teth_doc_file") {
+				$scope.newWindowAttachment(childFile);
+				return;
+			}
+			$scope.currentSelectedFolder.parentID = childFile.sys_id;
+			c.breadCrumbs.push(childFile);
+	};
+	
+	c.downloadIt = function(childFile) {			
+			c.server.get({ fileAttachmentObj : childFile  }).then(function(r) {
+				c.data.foldersTree = r.data.foldersTree;				
+				
+				var a = document.createElement('a');
+				a.setAttribute("target", "_top");
+				a.href = '../sys_attachment.do?sys_id=' + r.data.attachmentID;
+				a.click();
+			})
+	}
+	
+	$scope.newWindowAttachment = function(childFile) {			
+			c.server.get({ fileAttachmentObj : childFile  }).then(function(r) {
+				c.data.foldersTree = r.data.foldersTree;				
+				
+				var win = window.open('../sys_attachment.do?sysparm_referring_url=tear_off&view=true&sys_id=' + r.data.attachmentID);
+				if (!win) {
+					alert("Please enable popups");					
+				}
+			})		
+	}
+	
+	$scope.deleteFile = function(childFile) {
+			c.server.get({ deleteFileObj : childFile }).then(function(r) {
+				c.data.foldersTree = r.data.foldersTree;
+			})
+	}
+	
+	$scope.renameFile = function(childFile) {
+		$scope.renameValue = childFile.name; 
+		c.renameFile = childFile;
+		$("#myModal").modal('show');
+	}
+	
+	$scope.refresh = function() {		
+		$scope.loadingMessage = "Refreshing..."
+		$("#loadingModal").modal('show');
+		c.server.get({}).then(function(r) {
+			c.data.foldersTree = r.data.foldersTree;
+			$("#loadingModal").modal('hide');
+		})
+	}
+	
+	$scope.showCreateFolderModal = function() {		
+		$scope.newFolderValue = "Untitled"; 
+		$("#createFolderModal").modal('show');
+	}
+	
+	$scope.createNewFolder = function() {		
+		var currentCrumbIndex = c.breadCrumbs.length - 1;
+		var folderObj = c.breadCrumbs[currentCrumbIndex];
+		c.server.get({ createFolderObj : folderObj, createFolderName: $scope.newFolderValue }).then(function(r) {	
+			console.log(r);
+			$scope.data.foldersTree = r.data.foldersTree;		
+		});
+	}
+	
+	c.saveNewName = function() {
+		
+		var nameObj = {};
+		nameObj.newName = $scope.renameValue;
+		nameObj.fileObj = c.renameFile;
+		
+		c.server.get({ renameFile : nameObj }).then(function(r) {
+			$scope.data.foldersTree = r.data.foldersTree;
+		})		
+	}
+	
+	$scope.optionUploadFile = function($event) {
+		$("#uploadingModal").modal('show');
+		var uploadFileInput = angular.element("#uploadFile");
+		uploadFileInput.trigger("click");
+	}
+	
+	$scope.onFileSelect = function($files) {
+		var sizeLimit = 1024 * 1024 * 24; // 24MB
+		var tableName = "x_teth_doc_file_version";
+		
+		var childrenSize = $scope.filteredChildren.length;
+		
+		var newFiles = [];
+		var updateFiles = [];
+		
+		var filesLength = $files.length;
+		var currentCrumbIndex = c.breadCrumbs.length - 1;
+		var folderObj = c.breadCrumbs[currentCrumbIndex]
+		
+		loopFile: for (var i = 0; i < filesLength; i ++) {
+			
+			for (var j = 0; j < childrenSize; j++) {
+			
+				var fileObj = $scope.filteredChildren[j];
+			
+				if ($scope.filteredChildren[j].name == $files[i].name) {
+					updateFiles.push({name: $files[i].name, fileObj: fileObj});
+					continue loopFile;
+				}
+			}
+			
+			newFiles.push({name: $files[i].name, folderObj: folderObj})			
+		}
+		
+		for (var i = 0; i < newFiles.length; i++) {
+			$scope.loadingMessage = "Uploading File..."
+			$("#loadingModal").modal('show');
+			c.server.get({createFile : folderObj, fileName : newFiles[i].name }).then(function(r) {
+				c.data.returnedVersion = r.data.returnedVersion;
+
+				$scope.attachmentHandler.setParams(tableName, c.data.returnedVersion, sizeLimit);
+				$scope.attachmentHandler.onFileSelect($files);
+			});
+		}
+		
+		for (var i = 0; i < updateFiles.length; i++) {
+			$scope.loadingMessage = "Uploading File..."
+			$("#loadingModal").modal('show');
+			c.server.get({versionObj : updateFiles[i].fileObj }).then(function(r) {
+				c.data.returnedVersion = r.data.returnedVersion;
+
+				$scope.attachmentHandler.setParams(tableName, c.data.returnedVersion, sizeLimit);
+				$scope.attachmentHandler.onFileSelect($files);
+				
+			});
+		}
+	}
+	
+  //snRecordWatcher.initList("x_teth_crm_file");
+  //snRecordWatcher.initList("x_teth_crm_folders");
+	
+  //$scope.$on('record.updated', function(name, data) {
+  //  console.log(name);
+  //  console.log(data);		
+  //})
+	
+	
+
+	function appendError(error) {
+		console.log(error);
+		console.dir(nowAttachmentHandler);
+	}
+
+	function setAttachments(attachments, action) {
+		if ($scope.submitting == true)
+			return;
+
+		$scope.attachments = attachments;
+		if (!action)
+			return;
+
+		$scope.data.action = action;
+		spUtil.update($scope);
+	}
+
+	var table_options = {
+	};
+	
+	spUtil.get("crm-ticket-attachments", table_options).then(function(response) {
+		c.crmticketattachments = response;
+	});
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.fileCard {&#13;
+    padding: 5%;&#13;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, .14), 0 3px 3px -2px rgba(0, 0, 0, .2), 0 1px 8px 0 rgba(0, 0, 0, .12);&#13;
+    background-color: #ffffff;&#13;
+    border-radius: 2px;&#13;
+    height: 100%;&#13;
+  	margin: 1em;&#13;
+  	text-align: center;&#13;
+    cursor: pointer;&#13;
+}&#13;
+&#13;
+.header-padding {&#13;
+  padding-left: 3em;&#13;
+}&#13;
+&#13;
+.icon-margin {&#13;
+  margin-left: 3.5em;&#13;
+}&#13;
+&#13;
+.file-icon-height {&#13;
+  font-size: 21px;&#13;
+}&#13;
+&#13;
+.edit-icon-height {&#13;
+  font-size: 19px;&#13;
+}&#13;
+&#13;
+.attachment-widget {&#13;
+  margin-top: 3em;&#13;
+}&#13;
+&#13;
+.hover-edit:hover {&#13;
+  color: #E41E26;&#13;
+}&#13;
+&#13;
+.edit-button-span {&#13;
+  margin-right: 5em;&#13;
+}&#13;
+&#13;
+.option-button {&#13;
+  margin-right: .5em;&#13;
+}&#13;
+&#13;
+.options-upload-file {&#13;
+  display: none;&#13;
+}&#13;
+&#13;
+.loadingDiv {&#13;
+  margin: 2em;</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>document-main-panel</id>
+        <internal>false</internal>
+        <link/>
+        <name>Document Main Panel</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+
+  var docMgt = "";
+
+  if (input) {
+		
+    data.testInput = input;
+		
+		if (input.fileAttachmentObj) {
+			docMgt = new DocManagerUtil();
+			var fileVersionGR = docMgt.getActiveVersion(input.fileAttachmentObj);
+			var attachmentID = docMgt.getAttachments(fileVersionGR);
+			
+			data.attachmentID = attachmentID;			
+		}
+		
+		if (input.createFolderObj) {
+			docMgt = new DocManagerUtil();
+			data.createFolder = docMgt.createFolder(input.createFolderName, input.createFolderObj.sys_id);
+		}
+		
+		if (input.deleteFileObj) {
+			docMgt = new DocManagerUtil();
+			data.deleteReply = docMgt.deleteItem(input.deleteFileObj);
+		}
+		
+		if (input.versionObj) {			
+			data.versionObj = input.versionObj;
+			
+			docMgt = new DocManagerUtil();
+			data.returnedVersion = docMgt.createVersion(input.versionObj);			
+		}
+		
+		if (input.createFile) {
+			data.folderObj = input.createFile;
+			
+			docMgt = new DocManagerUtil();
+			data.returnedVersion = docMgt.createFile(input.createFile, input.fileName);
+		}
+
+    if (input.initialPath) {
+
+      var tableName = input.initialPath.tableName;
+      var recordID = input.initialPath.recordID;
+
+      docMgt = new DocManagerUtil()
+      data.returnedPath = docMgt.getPath(tableName, recordID);
+      data.returnedCreate = docMgt.createPath(data.returnedPath);
+			
+			var createLength = data.returnedCreate.length;
+			
+			data.newCrumbs = data.returnedCreate;
+			data.currentSelectedFolder = data.returnedCreate[createLength - 1];			
+    }
+
+
+    if (input.renameFile) {
+      docMgt = new DocManagerUtil();
+      data.retunObj = docMgt.renameFile(input.renameFile.fileObj,
+                                          input.renameFile.newName);
+    }
+		
+  }
+
+	
+	
+	
+	// Return new set of files and folders
+	docMgt = new DocManagerUtil();
+	data.foldersTree = docMgt.getAllFilesAndFolders();
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-01 12:03:19</sys_created_on>
+        <sys_id>e103be7d0f940700eee8059ce1050ebf</sys_id>
+        <sys_mod_count>29</sys_mod_count>
+        <sys_name>Document Main Panel</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sp_widget_e103be7d0f940700eee8059ce1050ebf</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-03 13:39:17</sys_updated_on>
+        <template><![CDATA[<div ng-file-drop="onFileSelect($files)" class="container-fluid">
+  
+  <!-- BreadCrumbs -->
+  <div class="row">
+    <div class="row">
+      <div class="col-md-12">
+        
+        <ol class="breadcrumb">
+          <li><a ng-click="c.sendHome()" href="">Home</a></li>
+          <li ng-repeat="crumb in c.breadCrumbs">
+            <a ng-click="c.traverseCrumb(crumb, $index)" href="">{{crumb.name}}</a></li>
+          <li class="active">Data</li>
+        </ol>
+      
+      </div>
+    </div>    
+  </div>
+  
+  <!-- Attachment Table -->
+  <div class="row">
+    <br>
+    <table class="table table-hover">
+       <tr>
+         <th class="header-padding">Name</th>
+         <th>
+           <input id="uploadFile" class="options-upload-file" type="file" ng-file-select="onFileSelect($files)">
+           <div class="btn-group pull-right option-button">
+            <button type="button" class="btn">Options</button>
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-click="showCreateFolderModal()"><a href="">New Folder</a></li>
+              <li ng-click="optionUploadFile($event)"><a href="">Upload File</a></li>
+              <li ng-click="refresh()"><a href="">Refresh</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="">Clear Folder Contents</a></li>
+            </ul>
+          </div>
+         </th>
+       </tr>
+        <tr ng-repeat="childFile in (filteredChildren = (c.data.foldersTree | filter:currentSelectedFolder))">
+          <td ng-click="c.showIt(childFile)">
+            <span class="file-icon-height">
+              <i ng-if="childFile.type == 'x_teth_doc_folder'" class="fa fa-folder-o fa-1x" aria-hidden="true"></i>
+              <i ng-if="childFile.type == 'x_teth_doc_file'" class="fa fa-file-text fa-1x" aria-hidden="true"></i>
+            </span>
+            <span class="icon-margin">
+              	{{childFile.name}}
+            </span>
+          </td>
+          <td class="edit-icon-height">
+            <span class="hover-edit pull-right edit-button-span">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">                  
+            			<i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li ng-if="childFile.type == 'x_teth_doc_folder'" ><a ng-click="c.showIt(childFile)" href=""><strong>Open</strong></a></li>
+                  <li ng-if="childFile.type == 'x_teth_doc_file'"><a ng-click="c.downloadIt(childFile)" href=""><strong>Download</strong></a></li>
+                  <li ng-if="childFile.type == 'x_teth_doc_file'" ng-click="newWindowAttachment(childFile)"><a href="">View</a></li>
+                  <li ng-click="deleteFile(childFile)"><a href="">Delete</a></li>
+                  <li><a ng-click="renameFile(childFile)" href="">Rename</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="">Properties</a></li>
+                </ul>
+              </div>
+            </span>
+          </td>
+        </tr>
+    </table>    
+  </div>
+  
+  <!-- Attachment Widget 
+  <div class="attachment-widget">    
+  	<sp-widget widget="c.crmticketattachments"></sp-widget>
+  </div> -->
+  
+  
+  
+  <!-- Rename Modal -->
+  <div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Rename Option</h4>
+        </div>
+        <div class="modal-body">
+          <p>Rename your file</p>
+          <div class="form-group">
+            <label for="usr"></label>
+            <input type="text" class="form-control" id="usr" ng-model="renameValue">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button ng-click="c.saveNewName()" type="button" class="btn btn-primary"  data-dismiss="modal">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    <!-- Create Foler Modal -->
+  <div id="createFolderModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Create Folder Option</h4>
+        </div>
+        <div class="modal-body">
+          <p>Folder Name</p>
+          <div class="form-group">
+            <label for="usr"></label>
+            <input type="text" class="form-control" id="usr" ng-model="newFolderValue">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button ng-click="createNewFolder()" type="button" class="btn btn-primary"  data-dismiss="modal">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading Modal -->
+  <div id="loadingModal" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+        	<p class="loadingDiv"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> {{loadingMessage}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>]]></template>
+    </sp_widget>
+</record_update>

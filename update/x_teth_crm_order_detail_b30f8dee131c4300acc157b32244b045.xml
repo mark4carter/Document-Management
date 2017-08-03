@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="x_teth_crm_order_detail">
+    <x_teth_crm_order_detail action="INSERT_OR_UPDATE">
+        <advanced>false</advanced>
+        <condition/>
+        <conditional_script/>
+        <order>10</order>
+        <sys_class_name>x_teth_crm_order_detail</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-08-03 12:41:21</sys_created_on>
+        <sys_id>b30f8dee131c4300acc157b32244b045</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Condition</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>x_teth_crm_order_detail_b30f8dee131c4300acc157b32244b045</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-08-03 12:41:21</sys_updated_on>
+        <table>x_teth_crm_order</table>
+        <text>Techport Thirteen objects to any contrary terms contained in any quotation, proposal, acknowledgement, invoice or other document originating from you, unless otherwise expressly agreed to, in writing, by an authorized representative of Techport Thirteen.</text>
+        <type>Condition</type>
+    </x_teth_crm_order_detail>
+</record_update>

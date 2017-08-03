@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-01 11:56:44</sys_created_on>
+        <sys_id>c602b27d0f940700eee8059ce1050e60</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_teth_doc_file.x_teth_doc.user</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_security_acl display_value="x_teth_doc_file">8e02b27d0f940700eee8059ce1050e5d</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_c602b27d0f940700eee8059ce1050e60</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-01 11:56:44</sys_updated_on>
+        <sys_user_role display_value="x_teth_doc.user" name="x_teth_doc.user">22113ef90f940700eee8059ce1050e51</sys_user_role>
+        <transaction_id/>
+    </sys_security_acl_role>
+</record_update>
