@@ -2,8 +2,28 @@
 <database>
     <element label="File Version" max_length="40" name="x_teth_doc_file_version" type="collection">
         <element label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Approver" max_length="32" name="approver" reference="sys_user" type="reference"/>
         <element label="File" max_length="32" name="file" reference="x_teth_doc_file" type="reference"/>
+        <element choice="1" label="State" max_length="40" name="state" type="choice">
+            <choice>
+                <element label="Internal Approval" sequence="0" value="Internal Approval"/>
+                <element label="DocuSign Signatures" sequence="1" value="DocuSign Signatures"/>
+                <element label="Approved" sequence="2" value="Approved"/>
+            </choice>
+        </element>
+        <element choice="1" label="Substate" max_length="40" name="substate" type="choice">
+            <choice>
+                <element label="Pending Approval" sequence="0" value="Pending Approval"/>
+                <element label="Rejected Approval" sequence="1" value="Rejected Approval"/>
+                <element label="Internal Approved" sequence="2" value="Internal Approved"/>
+                <element label="Pending Signatures" sequence="3" value="Pending Signatures"/>
+                <element label="Signature Received" sequence="4" value="Signature Received"/>
+            </choice>
+        </element>
         <index name="index">
+            <element name="approver"/>
+        </index>
+        <index name="index2">
             <element name="file"/>
         </index>
     </element>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Document Approval Conditions" max_length="40" name="x_teth_doc_document_approval_conditions" type="collection">
+        <element label="Approval Table" max_length="40" name="approval_table" type="table_name"/>
+        <element label="Approver" max_length="32" name="approver" reference="sys_user" type="reference"/>
+        <element label="Order" max_length="40" name="order" type="integer"/>
+        <element dependent="approval_table" dependent_on_field="approval_table" label="Table Conditions" max_length="4000" name="table_conditions" type="conditions" use_dependent_field="true"/>
+        <index name="index">
+            <element name="approver"/>
+        </index>
+    </element>
+</database>

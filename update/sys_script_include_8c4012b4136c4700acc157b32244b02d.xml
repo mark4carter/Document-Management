@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_teth_doc.DocuSignIntegration</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>DocuSignIntegration</name>
+        <script><![CDATA[var DocuSignIntegration = Class.create();
+DocuSignIntegration.prototype = {
+  initialize: function() {
+    this.integrationUsername = gs.getProperty("x_teth_doc.docusign.cred.username");
+    this.integrationPassword = gs.getProperty("x_teth_doc.docusign.cred.password");
+    this.integrationIntegratorKey = gs.getProperty("x_teth_doc.docusign.cred.key");
+
+    this.loginEndpoint = "https://demo.docusign.net/restapi/v2/login_information";
+
+    //used for attaching finished document
+    this.ccEmail = gs.getProperty("instance_name") + "@service-now.com";
+
+    this.docuSignTable = "x_teth_doc_docusign_integration";
+    this.docusignApprovalTable = "x_teth_doc_docusign_document_approval";
+    this.approverTable = "sys_user";
+
+  },
+
+
+  getBaseURL: function() {
+    //Rest message to get accounts array
+    var ret = {};
+
+    ret.header = '{"Username":"' + this.integrationUsername + '",' +
+      '"Password":"' + this.integrationPassword + '",' +
+      '"IntegratorKey": "' + this.integrationIntegratorKey  + '"}';
+
+    var restMessage = new sn_ws.RESTMessageV2();
+
+    restMessage.setHttpMethod("get");
+    restMessage.setEndpoint(this.loginEndpoint);
+    restMessage.setRequestHeader("X-DocuSign-Authentication", ret.header);
+    var response = restMessage.execute();
+
+    var obj = JSON.parse(response.getBody());
+    var accountsArray = obj.loginAccounts;
+
+    //Get base_uri from accounts array  (ex. 'www.docusign.com/'  or  'na.docusign.com/')
+    var str = "";
+    ret.base_uri = "";
+    var is_default = false;
+
+    for (var i = 0; i < accountsArray.length; i++) {
+      var arrObj = accountsArray[i];
+      is_default = false;
+      ret.base_uri = "";
+
+      for (var prop in accountsArray[i]) {
+        if (prop == "baseUrl") ret.base_uri = arrObj[prop];
+
+        if (prop == "isDefault" && arrObj[prop] == true) {
+          is_default = true;
+        }
+      }
+      if (is_default == true) {
+        break;
+      }
+      if (i == accountsArray.length) {
+        return false; // no default user, end function
+      }
+    }
+
+    return ret;
+  },
+
+  // tagAndSend   sends Docusign to create envelope
+  sendToDocusign: function(integrationGR) {
+
+    var base = this.getBaseURL();
+    var base_uri = base.base_uri;
+    var header = base.header;
+
+    var restMessage = new sn_ws.RESTMessageV2();
+    restMessage.setHttpMethod("post");
+    restMessage.setEndpoint(base_uri + "/envelopes");
+    restMessage.setRequestHeader("Accept", "application/json");
+    restMessage.setRequestHeader("Content-Type", "application/json");
+    restMessage.setRequestHeader("X-DocuSign-Authentication", header);
+
+    var reqBody = {};
+    reqBody.status = "sent";
+    reqBody.emailSubject = "DocuSign API call - Embedded Sending Example";
+    reqBody.documents = this.getDocInfo(integrationGR);
+    reqBody.recipients = {};
+    reqBody.recipients.signers = this.getApproverInfo(integrationGR);
+
+    reqBody.recipients.carbonCopies = [{
+      name: "ServiceNow",
+      email: this.ccEmail,
+      recipientId : 1
+    }];
+
+    restMessage.setRequestBody(JSON.stringify(reqBody));
+
+    gs.info(JSON.stringify(reqBody.recipients));
+
+    var response = restMessage.execute();
+    var obj = JSON.parse(response.getBody());
+    var envelopeInfo = response.getBody();
+    this.updateDocTable(envelopeInfo, obj, integrationGR.sys_id);
+    return envelopeInfo;
+  },
+
+  // unfinished/untested
+  attachdocs: function(tableName, record_sys, docs) {
+    var gr = new GlideRecord(tableName);
+    gr.get(record_sys);
+
+    for (var i = 0; i < docs.length; i++) {
+      sysattach.writeBase64(gr, docs[i].name + '_signed', 'application/pdf', docs[i].documentBase64);
+    }
+    return;
+  },
+
+  //unfinished/untested
+  getDoc: function(base, envelopeId) {
+    if (base == null) {
+      base = this.getBaseURL();
+    }
+
+    var base_uri = base.base_uri;
+    var header = base.header;
+    var restMessage = new sn_ws.RESTMessageV2();
+    restMessage.setHttpMethod("get");
+    restMessage.setEndpoint(base_uri + "/envelopes/" + envelopeId + "/documents/archive");
+    restMessage.setRequestHeader("Accept", "application/json");
+    restMessage.setRequestHeader("Content-Type", "application/json");
+    restMessage.setRequestHeader("X-DocuSign-Authentication", header);
+
+    var response = restMessage.execute();
+    //gs.info('*** get doc response ' + JSON.stringify(response.getBody()));
+    //var obj = JSON.parse(response.getBody());
+
+
+    return response.getBody();
+  },
+
+  getExternalDocURL: function(envelopeId) {
+
+    var base = this.getBaseURL();
+
+    //cannot determine what this email does, mark is a placeholder
+    var url_obj = { "email": "mark.carter@techport13.com", "returnUrl": "" };
+    var restMessage = new sn_ws.RESTMessageV2();
+    restMessage.setHttpMethod("post");
+    restMessage.setEndpoint(base.base_uri + "/envelopes/" + envelopeId + "/views/viewlink");
+    restMessage.setRequestHeader("Accept", "application/json");
+    restMessage.setRequestHeader("Content-Type", "application/json");
+    restMessage.setRequestHeader("X-DocuSign-Authentication", base.header);
+    restMessage.setRequestBody(JSON.stringify(url_obj));
+    var response = restMessage.execute();
+    var obj = JSON.parse(response.getBody());
+
+    return obj;
+  },
+
+  checkStatus: function(env_id) {
+
+    var base = this.getBaseURL();
+
+    var restMessage = new sn_ws.RESTMessageV2();
+    restMessage.setHttpMethod("get");
+    restMessage.setEndpoint(base.base_uri + "/envelopes?" + "envelope_ids=" + env_id);
+    restMessage.setRequestHeader("Accept", "application/json");
+    restMessage.setRequestHeader("Content-Type", "application/json");
+    restMessage.setRequestHeader("X-DocuSign-Authentication", base.header);
+
+    var response = restMessage.execute();
+    var obj = JSON.parse(response.getBody());
+
+    return obj.envelopes[0].status;
+  },
+
+  updateDocTable: function(envelope, obj, doc_table_sys_id) {
+    var tableName = this.docuSignTable;
+    var doc_table_gr = new GlideRecord(tableName);
+    doc_table_gr.get(doc_table_sys_id);
+    doc_table_gr.response = envelope;
+    doc_table_gr.envelope_id = obj.envelopeId;
+    doc_table_gr.status = 'sent';
+    doc_table_gr.update();
+    return;
+  },
+
+  getDocInfo: function(integrationGR) {
+
+    var tableName = integrationGR.record_table;
+    var record_sys = integrationGR.record_id;
+
+    var doc_list = [];
+    var grSysAtt = new GlideRecord('sys_attachment');
+    grSysAtt.addQuery('table_name', tableName); // name of table whose record have attachment
+    grSysAtt.addQuery('table_sys_id', record_sys); // sys_id of record having attachment
+    grSysAtt.query();
+    var doc_id = 1;
+    while (grSysAtt.next()) {
+      var doc = {};
+      doc.documentId = doc_id + '';
+      doc.name = grSysAtt.file_name + '';
+      var sa = new GlideSysAttachment();
+      var attachmentContents = sa.getContentBase64(grSysAtt);
+      doc.documentBase64 = attachmentContents;
+      doc_list.push(doc);
+      doc_id++;
+    }
+    return doc_list;
+  },
+
+  getApproverInfo: function(integrationGR) {
+    var table = this.approverTable;
+  var i = 1;
+
+    var approvalGR = new GlideRecord(this.docusignApprovalTable);
+    approvalGR.addQuery("record_id", integrationGR.record_id);
+    approvalGR.query();
+
+    var approver_list = [];
+
+    while (approvalGR.next()) {
+      var approver = {};
+      approver.name = approvalGR.approver.name.toString();
+      approver.email = approvalGR.approver.email.toString();
+      approver.recipientId = i + 1 + "";
+      approver.routingOrder = approvalGR.sequence.toString();
+      approver_list.push(approver);
+    }
+
+    return approver_list;
+  },
+
+  type: 'DocuSignIntegration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-10 17:11:35</sys_created_on>
+        <sys_id>8c4012b4136c4700acc157b32244b02d</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>DocuSignIntegration</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_script_include_8c4012b4136c4700acc157b32244b02d</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-11 13:30:00</sys_updated_on>
+    </sys_script_include>
+</record_update>

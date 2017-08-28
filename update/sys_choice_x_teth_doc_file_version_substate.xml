@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="substate" table="x_teth_doc_file_version" version="3">
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>substate</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Pending Approval</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>0</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>8c25fe4913648700acc157b32244b071</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+            <value>Pending Approval</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>substate</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Rejected Approval</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>1</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>0025fe4913648700acc157b32244b073</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+            <value>Rejected Approval</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>substate</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Internal Approved</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>2</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>cc25fe4913648700acc157b32244b073</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+            <value>Internal Approved</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>substate</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Pending Signatures</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>3</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>8c25fe4913648700acc157b32244b074</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+            <value>Pending Signatures</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>substate</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Signature Received</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>4</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>4c25fe4913648700acc157b32244b075</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+            <value>Signature Received</value>
+        </sys_choice>
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>substate</element>
+            <name>x_teth_doc_file_version</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 14:30:30</sys_created_on>
+            <sys_id>c825fe4913648700acc157b32244b072</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>substate</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_choice_x_teth_doc_file_version_substate</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:30:30</sys_updated_on>
+        </sys_choice_set>
+    </sys_choice>
+</record_update>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="DocuSign Document Approval" max_length="40" name="x_teth_doc_docusign_document_approval" type="collection">
+        <element label="Approver" max_length="32" name="approver" reference="sys_user" type="reference"/>
+        <element dependent="record_table" dependent_on_field="record_table" label="Record ID" max_length="40" name="record_id" type="document_id" use_dependent_field="true"/>
+        <element label="Record Table" max_length="80" name="record_table" type="table_name"/>
+        <element label="Sequence" max_length="40" name="sequence" type="integer"/>
+        <index name="index">
+            <element name="approver"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_section caption="" section_id="77b2c6c113248700acc157b32244b06b" sys_domain="global" table="x_teth_doc_docusign_document_approval" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>3c13cac113248700acc157b32244b01c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>approver</element>
+            <position>1</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>bc13cac113248700acc157b32244b01c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>2</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>3013cac113248700acc157b32244b01d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>sequence</element>
+            <position>3</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>b013cac113248700acc157b32244b01d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>4</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>3413cac113248700acc157b32244b01d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>record_id</element>
+            <position>5</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>b413cac113248700acc157b32244b01d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>record_table</element>
+            <position>6</position>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:51:50</sys_created_on>
+            <sys_id>3813cac113248700acc157b32244b01d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_teth_doc_docusign_document_approval" sys_domain="global" view="Default view">77b2c6c113248700acc157b32244b06b</sys_ui_section>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:51:50</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_teth_doc_docusign_document_approval</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 10:50:24</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>77b2c6c113248700acc157b32244b06b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_teth_doc_docusign_document_approval</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_ui_section_77b2c6c113248700acc157b32244b06b</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 10:50:24</sys_updated_on>
+            <sys_user/>
+            <title>true</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

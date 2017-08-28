@@ -3,8 +3,13 @@
     <element label="Folder" max_length="40" name="x_teth_doc_folder" type="collection">
         <element label="Name" max_length="40" name="name" type="string"/>
         <element label="Parent" max_length="32" name="parent" reference="x_teth_doc_folder" type="reference"/>
+        <element dependent="record_table" dependent_on_field="record_table" label="Record ID" max_length="32" name="record_id" type="document_id" use_dependent_field="true"/>
+        <element label="Record Table" max_length="40" name="record_table" type="string"/>
         <index name="index">
             <element name="parent"/>
+        </index>
+        <index name="index2">
+            <element name="record_id"/>
         </index>
     </element>
 </database>
