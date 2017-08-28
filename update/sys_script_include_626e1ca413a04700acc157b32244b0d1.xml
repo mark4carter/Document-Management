@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_teth_doc.DocManagerPermissions</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>DocManagerPermissions</name>
+        <script><![CDATA[var DocManagerPermissions = Class.create();
+DocManagerPermissions.prototype = {
+  initialize: function(dmu) {
+    this.file_tbl = 'x_teth_doc_file';
+    this.folder_tbl = 'x_teth_doc_folder';
+    this.version_tbl = 'x_teth_doc_file_version';
+    this.mapping_tbl = 'x_teth_doc_path_mapping';
+    this.folderPermissionsTable = 'x_teth_doc_folder_permission';
+    this.filePermissionsTable = 'x_teth_doc_file_permission';
+
+    this.readRoles = "Owner, Editor, Viewer";
+    this.writeRoles = "Owner, Editor";
+  },
+
+
+  //*
+  //* Folder Security
+  //*
+
+  //------------------------------------------------
+  //! Check if user has read permissions to a folder
+  //------------------------------------------------
+  checkReadFolderSecurity: function(folderGR) {
+    if (!folderGR.record_table) return;
+    var relatedRecord = this.getRelatedRecord(folderGR);
+    if (relatedRecord.canRead())
+      return true;
+    
+    return this.checkFolderSecurityByPermissions(folderGR, this.readRoles);
+  },
+
+
+  //--------------------------------------------------
+  //! Check if user has write permissions to a folder
+  //--------------------------------------------------
+  checkWriteFolderSecurity: function(folderGR) {
+    if (!folderGR.record_table) return;
+    var relatedRecord = this.getRelatedRecord(folderGR);
+    if (relatedRecord.canWrite()) 
+      return true;
+    
+    return this.checkFolderSecurityByPermissions(folderGR, this.writeRoles);
+  },
+
+
+  //--------------------------------------------------------------------
+  //! Function used to determine permissions based on passed in roles
+  //--------------------------------------------------------------------
+  checkFolderSecurityByPermissions: function(folderGR, permissions) {
+    var readableBoolean = false;
+    var currentUserObject = gs.getUser();
+
+    var folderPermissionsGr = new GlideRecord(this.folderPermissionsTable);
+    folderPermissionsGr.addQuery("folder", folderGR.sys_id.toString());
+    folderPermissionsGr.addQuery("user", gs.getUserID());
+    folderPermissionsGr.addQuery("permission", "IN", permissions);
+    folderPermissionsGr.query();
+
+    if (folderPermissionsGr.next())
+      return true;
+
+    folderPermissionsGr = new GlideRecord(this.folderPermissionsTable);
+    folderPermissionsGr.addQuery("folder", folderGR.sys_id.toString());
+    folderPermissionsGr.addQuery("permission", "IN", permissions);
+    folderPermissionsGr.query();
+
+    while (folderPermissionsGr.next()) {
+      if (currentUserObject.isMemberOf(folderPermissionsGr.group.toString()))
+        return true;
+    }
+
+    return readableBoolean;
+  },
+
+  //---------------------------------------------
+  //! returns related record based on DocumentID
+  //----------------------------------------------
+  getRelatedRecord: function(fileGR) {
+    var relatedRecordGR = new GlideRecord(fileGR.record_table);
+    relatedRecordGR.get(fileGR.record_id);
+
+    return relatedRecordGR;
+  },
+
+
+
+
+
+  //*
+  //* File Security
+  //*
+
+  //------------------------------------------------
+  //! Check if user has read permissions to a file
+  //------------------------------------------------
+  checkReadFileSecurity: function(fileGR) {
+    if (this.checkReadFolderSecurity(fileGR.folder))
+     return true;
+
+    return this.checkFileSecurityByPermissions(fileGR, this.readRoles);
+  },
+
+  //-------------------------------------------------
+  //! Check if user has write permissions to a file
+  //-------------------------------------------------
+  checkWriteFileSecurity: function(fileGR) {
+    if (this.checkWriteFolderSecurity(fileGR.folder))
+      return true;
+
+    return this.checkFileSecurityByPermissions(fileGR, this.writeRoles);
+  },
+
+  //--------------------------------------------------------------------
+  //! Function used to determine permissions based on passed in roles
+  //--------------------------------------------------------------------
+  checkFileSecurityByPermissions: function(fileGR, permissions) {
+    var currentUserObject = gs.getUser();
+
+    var filePermissionGR = new GlideRecord(this.filePermissionsTable);
+    filePermissionGR.addQuery("file", fileGR.sys_id.toString());
+    filePermissionGR.addQuery("user", gs.getUserID());
+    filePermissionGR.addQuery("permission", "IN", permissions);
+    filePermissionGR.query();
+
+    if (filePermissionGR.next())
+      return true;
+
+    filePermissionGR = new GlideRecord(this.filePermissionsTable);
+    filePermissionGR.addQuery("file", fileGR.sys_id.toString());
+    filePermissionGR.addQuery("permission", "IN", permissions);
+    filePermissionGR.query();
+
+    while (filePermissionGR.next()) {
+      if (currentUserObject.isMemberOf(filePermissionGR.group.toString()))
+        return true;
+    }
+
+    return false;
+  },
+
+
+
+
+  //*
+  //* File Versions Security
+  //*
+
+  //-------------------------------------------------------
+  //! Check if user has read permissions to a fileversions
+  //-------------------------------------------------------
+  checkReadFileVersionSecurity: function(fileVersionGR) {
+    return this.checkReadFileSecurity(fileVersionGR.file);
+  },
+
+  //-------------------------------------------------------
+  //! Check if user has read permissions to a fileversions
+  //-------------------------------------------------------
+  checkWriteFileVersionSecurity: function(fileVersionGR) {
+    return this.checkWriteFileSecurity(fileVersionGR.file);
+  },
+
+
+
+
+
+  //*
+  //* File Permissions Security
+  //*
+
+  //--------------------------------------------------------------------
+  //! Check if user has read permissions to a file permissions record
+  //-------------------------------------------------------------------
+  checkReadFilePermissionsSecurity: function(filePermissionsGR) {
+    return this.checkReadFileSecurity(filePermissionsGR.file);
+  },
+
+  //--------------------------------------------------------------------
+  //! Check if user has write permissions to a file permissions record
+  //-------------------------------------------------------------------
+  checkWriteFilePermissionsSecurity: function(filePermissionsGR) {
+    return this.checkWriteFileSecurity(filePermissionsGR.file);
+  },
+
+
+
+
+
+  //*
+  //* Folder Permissions Security
+  //*
+
+  //--------------------------------------------------------------------
+  //! Check if user has read permissions to a file permissions record
+  //-------------------------------------------------------------------
+  checkReadFolderPermissionsSecurity: function(folderPermissionsGR) {
+    return this.checkReadFolderSecurity(folderPermissionsGR.folder);
+  },
+
+  //--------------------------------------------------------------------
+  //! Check if user has write permissions to a file permissions record
+  //-------------------------------------------------------------------
+  checkWriteFolderPermissionsSecurity: function(folderPermissionsGR) {
+    return this.checkWriteFolderSecurity(folderPermissionsGR.folder);
+  },
+
+
+
+  type: 'DocManagerPermissions'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-09 14:15:32</sys_created_on>
+        <sys_id>626e1ca413a04700acc157b32244b0d1</sys_id>
+        <sys_mod_count>46</sys_mod_count>
+        <sys_name>DocManagerPermissions</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_script_include_626e1ca413a04700acc157b32244b0d1</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-10 14:40:39</sys_updated_on>
+    </sys_script_include>
+</record_update>

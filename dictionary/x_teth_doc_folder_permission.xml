@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Folder Permission" max_length="40" name="x_teth_doc_folder_permission" type="collection">
+        <element label="Folder" max_length="32" name="folder" reference="x_teth_doc_folder" type="reference"/>
+        <element label="Group" max_length="32" name="group" reference="sys_user_group" type="reference"/>
+        <element choice="3" default="Viewer" label="Permission" max_length="40" name="permission" type="choice">
+            <choice>
+                <element label="Owner" sequence="0" value="Owner"/>
+                <element label="Editor" sequence="1" value="Editor"/>
+                <element label="Viewer" sequence="2" value="Viewer"/>
+            </choice>
+        </element>
+        <element label="User" max_length="32" name="user" reference="sys_user" type="reference"/>
+        <index name="index">
+            <element name="folder"/>
+        </index>
+        <index name="index2">
+            <element name="user"/>
+        </index>
+        <index name="index3">
+            <element name="group"/>
+        </index>
+    </element>
+</database>

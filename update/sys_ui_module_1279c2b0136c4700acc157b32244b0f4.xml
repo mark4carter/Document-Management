@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_ui_module">
+    <sys_ui_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Document Management">34a13e3d0f940700eee8059ce1050e81</application>
+        <filter/>
+        <name>DocuSign Integrations</name>
+        <order/>
+        <path/>
+        <path_relative_to_root>false</path_relative_to_root>
+        <roles>x_teth_doc.user</roles>
+        <sys_class_name>sys_ui_module</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-10 16:41:18</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>1279c2b0136c4700acc157b32244b0f4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuSign Integrations</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_ui_module_1279c2b0136c4700acc157b32244b0f4</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-10 16:41:18</sys_updated_on>
+        <table>x_teth_doc_docusign_integration</table>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+    </sys_ui_module>
+</record_update>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Password used in Docusign Integration</description>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_teth_doc.docusign.cred.password</name>
+        <read_roles/>
+        <suffix>docusign.cred.password</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-10 16:46:59</sys_created_on>
+        <sys_id>6dca86b0136c4700acc157b32244b0af</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>x_teth_doc.docusign.cred.password</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_properties_6dca86b0136c4700acc157b32244b0af</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-10 18:26:03</sys_updated_on>
+        <type>password2</type>
+        <value>{{dflt-gpaes}}GHHwik8OuD0e4UUyhAMQKg==</value>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=6dca86b0136c4700acc157b32244b0af"/>
+</record_update>

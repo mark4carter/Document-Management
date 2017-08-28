@@ -9,481 +9,614 @@
         <name>DocManagerUtil</name>
         <script><![CDATA[var DocManagerUtil = Class.create();
 DocManagerUtil.prototype = {
-    initialize: function() {
-		this.file_tbl = 'x_teth_doc_file';
-		this.folder_tbl = 'x_teth_doc_folder';
-		this.version_tbl = 'x_teth_doc_file_version';
-		this.mapping_tbl = 'x_teth_doc_path_mapping';
-    },
-	
+  initialize: function(dmp) {
+    this.file_tbl = 'x_teth_doc_file';
+    this.folder_tbl = 'x_teth_doc_folder';
+    this.version_tbl = 'x_teth_doc_file_version';
+    this.mapping_tbl = 'x_teth_doc_path_mapping';
+    this.folderPermissionsTable = 'x_teth_doc_folder_permission';
+    this.filePermissionsTable = 'x_teth_doc_file_permission';
+    this.documentConditionsTable = 'x_teth_doc_document_approval_conditions';
 
-	getAllFilesAndFolders: function() {	
-	
-		var foldersTree = [];
-
-		var foldersGR = new GlideRecord(this.folder_tbl);
-		foldersGR.query();
-
-		while (foldersGR.next()) {
-			var folder = {};
-			folder.name = foldersGR.name.toString();
-			folder.type = foldersGR.getTableName();
-			folder.sys_id = foldersGR.sys_id.toString();
-			folder.parentID = foldersGR.parent.toString();
-			folder.parentName = foldersGR.parent.name.toString();
-			if (folder.parentID == "")
-				folder.parentID = "Home";
-			foldersTree.push(folder);
-		}
-
-		var filesGR = new GlideRecord(this.file_tbl);
-		filesGR.query();
-
-		while (filesGR.next()) {
-			var file = {};
-			file.name = filesGR.name.toString();
-			file.type = filesGR.getTableName();
-			file.sys_id = filesGR.sys_id.toString();
-			file.parentID = filesGR.folder.toString();
-			file.parentName = filesGR.folder.name.toString();
-			if (file.parentID == "")
-				file.parentID = "Home";
-			foldersTree.push(file);
-		}		
-		
-		return foldersTree;
-	},
-	
-	/*
-	name: renameFile
-	purpose: rename the file or folder
-	input:  file -  the file or folder {name, sys_id, type}
-			newname - new name for the file or folder
-	returns: true or false
-	*/
-	renameFile: function(file, newname) {
-		var file_gr = new GlideRecord(file.type);
-		file_gr.addQuery('sys_id', file.sys_id);
-		file_gr.query();
-		if (file_gr.next()) {
-			file_gr.name = newname;
-			file_gr.update();
-			return true;
-		}
-		return false;
-	},
-	
-	/* 
-	name: getPath
-	purpose: to get the path
-	input:  table - table of the current record
-			sys_id - sys_id of the current record
-	returns: an array of the path [grandparent, parent, child]
-	*/
-	getPath: function(table, sys_id) {
-		var gr = new GlideRecord(table);
-		gr.get(sys_id);
-		
-		var mapping = new GlideRecord(this.mapping_tbl);
-		mapping.addQuery('table', table);
-		mapping.query();
-
-		var path = [];
-		if (mapping.next()) {
-			path.unshift(gr.getElement(mapping.value) + '');
-			var fields = mapping.parent_field.split(',');
-			var values = mapping.parent_value.split(',');
-			var element = '';
-			for (var i=0;i<fields.length; i++) {
-				element += fields[i]+'.';
-				path.unshift(gr.getElement(element + values[i]) + '');
-			}
-		}
-		return path;
-	},
-	/*
-	name: getFolderContents
-	purpose: get the contents in the current folder
-	input: folder - sys id of current folder
-	returns: json array of folders {name, sys_id, type, files}
-	*/
-	getFolderContents: function(folder) {
-		var folder_gr = new GlideRecord(this.folder_tbl);
-		folder_gr.addQuery('parent', folder.sys_id);
-		folder_gr.query();
-		
-		var folders = [];
-		while (folder_gr.next()) {
-			var f = {name: folder_gr.name+'', sys_id: folder_gr.sys_id+'', type: this.folder_tbl, files: []};
-			f.files = this.getFolderFiles(f.sys_id);
-			folders.push(f);
-		}
-		var files = this.getFolderFiles(folder);
-		for (var i=0; i<files.length; i++) {
-			folders.push(files[i]);
-		}
-		return folders;
-	},
-	/*
-	name: getFolderFiles
-	purpose: to return all the files in the folder
-	input: folder - folder obj {name, sys_id, type, files[]}
-	returns: json array of folder contents {name, sys_id, type}
-	*/
-	getFolderFiles: function(folder) {
-		var file = new GlideRecord(this.file_tbl);
-		file.addQuery('folder', folder.sys_id);
-		file.query();
-		
-		var files = [];
-		while (file.next()) {
-			var f = {name: file.name+'', sys_id: file.sys_id+'', type: this.file_tbl};
-			files.push(f);
-		}
-		return files;
-	},
-	/*
-	name: moveItem
-	purpose: move the item to the correct folder
-	input:  src - source folder obj  {name, sys_id, type}
-			target - the obj to be moved from the src to the dest file/folder  {name, sys_id, type}/{name, sys_id, type, files[]}
-			dest - the destination folder
-	returns: updated source obj
-	*/
-	moveItem: function(src, target, dest) {
-		if (target.type == this.folder_tbl) {
-			this.moveFolder(target, dest);
-		} else if (target.type == this.file_tbl) {
-			this.moveFile(target, dest);
-		} else {
-			return false;
-		}
-		return this.getFolderContents(src);
-	},
-	/*
-	name: moveFolder
-	purpose: move a folder to a different parent folder
-	input:  folder - folder obj to be moved {name, sys_id, type, files[]}
-			dest - destination folder{name, sys_id, type, files[]}
-	returns: true/false
-	*/
-	moveFolder: function(folder, dest) {
-		var folderGR = new GlideRecord(this.folder_tbl);
-		folderGR.get(folder.sys_id);
-		
-		folderGR.parent = dest.sys_id;
-		folderGR.update();
-		return true;
-	},
-	/*
-	name: moveFile
-	purpose: move a file to a different parent folder
-	input:  file - file object {name, sys_id, type}
-			dest - destination folder obj {name, sys_id, type, files[]}
-	returns: true/false
-	*/
-	moveFile: function(file, dest) {
-		var fileGR = new GlideRecord(this.file_tbl);
-		fileGR.get(file.sys_id);
-		
-		fileGR.folder = dest.sys_id;
-		fileGR.update();
-		return true;
-	},
-	/*
-	name: deleteItem
-	purpose: delete the file/folder and all of its contents
-	input: file/folder  {name, sys_id, type}/{name, sys_id, type, files[]}
-	returns: true/false
-	*/
-	deleteItem: function(item) {
-		if (item.type == this.folder_tbl) {
-			this.deleteFolder(item);
-		} else if (item.type == this.file_tbl) {
-			this.deleteFile(item);
-		} else {
-			return false;
-		}
-		return true;
-	},
-	/*
-	name: deleteFolder
-	purpose: delete the folder and all of its contents
-	input: folder - object of the folder
-	returns: true/false
-	*/
-	deleteFolder: function(folder) {
-		var folderGR = new GlideRecord(this.folder_tbl);
-		folderGR.get(folder.sys_id);
-		
-		var files = this.getFolderFiles(folder);
-		for (var file in files) {
-			this.deleteFile(files[file]);
-		}
-		var contents = this.getFolderContents(folder);
-		for (var stuff in contents) {
-			if (contents[stuff].type == this.folder_tbl) {
-				this.deleteFolder(contents[stuff]);
-			}
-		}
-		folderGR.deleteRecord();
-		return true;
-	},
-	/*
-	name: deleteFile
-	purpose: to remove an attached doc
-	input:  name - name of the doc
-			path - array of names in the path EX. [grandparent, parent, child]
-	returns: false if not found or the number of records deleted
-	*/
-	deleteFile: function(file) {
-		
-		var file_gr = new GlideRecord(this.file_tbl);
-		file_gr.get(file.sys_id);
-					
-		var version = new GlideRecord(this.version_tbl);
-		version.addQuery('file', file.sys_id);
-		version.deleteMultiple();
-
-		file_gr.deleteRecord();
-		
-		return true;
-	},
-
-	/* 
-	name: createFile
-	purpose: create a new file and file version
-	input:	folder - json obj of the folder {name, sys_id, type, files[]}
-			filename - the name of the file to be created
-	returns: sys_id of the version
-	*/
-	createFile: function(folder, filename) {
+    if (!dmp) 
+      this.docPermissions = new DocManagerPermissions(this);
+  },
 
 
-		var folder_gr = new GlideRecord(this.folder_tbl);
-		folder_gr.get(folder.sys_id);
-		
-		var file = new GlideRecord(this.file_tbl);
-		file.initialize();
-		file.name = filename;
-		file.type = this.file_tbl;
-		file.folder = folder.sys_id;
-		var file_sys = file.insert();
-		
-		var version_sys = this.createVersionFromSysID(file_sys);
-		
-		//attach the doc 
-        //var sysattach = new GlideSysAttachment();
-		//sysattach.writeBase64(folder, doc.filename, doc.type, doc.encodedPDF);
-		return version_sys;
-	},
-	
-	createVersionFromSysID: function(file_sys, doc) {
-		return this.createVersion({sys_id : file_sys}, doc);
-	},
-	
-	/*
-	name: CreateVersion
-	purpose: add new version of a file and deactivate old version
-	input:  file - file object {name, sys_id, type}
-			doc - the attachment
-	returns: sys_id of version or false
-	*/
-	createVersion: function(file, doc) {
-		var version = new GlideRecord(this.version_tbl);
-		version.addActiveQuery();
-		version.addQuery('file', file.sys_id);
-		version.query();
-		
-		if(version.next()) {
-			version.active = false;
-			version.update();
-		}
-		var newVersion = new GlideRecord(this.version_tbl);
-		newVersion.initialize();
-		newVersion.active = true;
-		newVersion.file = file.sys_id;
-        //var sysattach = new GlideSysAttachment();
-		//sysattach.writeBase64(newVersion , doc.filename, doc.type, doc.encodedPDF);
-		var version_sys = newVersion.insert();
-		
-		return version_sys;
-	},
-	/*
-	name: createPath
-	purpose: check if the given path exists, create one if it does not exist by default(can be overridden)
-	input:  path - array of names in the path EX. [grandparent, parent, child]
-			override(optional) - if this is false don't create folders that dont exist
-	returns: json array of folder contents {name, sys_id, type, files}
-	*/
-	
-	createPath: function(path, override) {
-		var create = true;
-		if (override == false && override != null) {
-			create = false;
-		}
-		
-		if (path.length == 0) {
-			return false;
-		}
-		var folders = [];
-		
-		var parent = this.findFolder(path[0], null);
-		if (parent == false && create) {
-			parent = this.createFolder(path[0], null);
-		}
-		
-		var folder = {name: path[0], 
-					  sys_id: parent.sys_id.toString(),
-					  type: this.folder_tbl,
-					  parentID: parent.parent.toString(),
-					  parentName: parent.parent.name.toString(),
-					  files: []};
-		if (folder.parentID == "") {
-			folder.parentID = "Home";
-		}
-		folders.push(folder);
-		
-		for (var i=0; i<path.length-1; i++) {
-			var child = path[i+1];
-			var childGR = this.findFolder(child, parent.sys_id.toString());
-			if (childGR == false && create) {
-				childGR = this.createFolder(child, parent.sys_id.toString());
-			}
-			parent = childGR;
-			folder = {name: child,
-					  sys_id: childGR.sys_id.toString(),
-					  parentID: childGR.parent.toString(),
-					  parentName: childGR.parent.name.toString(),
-					  type: this.folder_tbl,
-					  files: []};
-			if (folder.parentID == "") {
-				folder.parentID = "Home";
-			}
-			folders.push(folder);
-		}
-		return folders;
-	},
-	
-	/* 
-	name: createFolder
-	purpose: create a new record on the folder table (x_teth_crm_folders)
-	input:  name - name of folder as a string
-			parent - sys_id of parent (aka reference value)
-	returns: sys_id of the created record
-	*/
-	createFolder: function(name, parent) {
-		var folder_gr = new GlideRecord(this.folder_tbl);
-		folder_gr.initialize();
-		folder_gr.name = name;
-		folder_gr.parent = parent;
-		var newFolder = folder_gr.insert();
-		return folder_gr;
-	},
-	
-	/* 
-	name: findFolder
-	purpose: determine if record on the folder table exists
-	input:  name - name of folder as a string
-			parent - sys_id of parent (aka reference value)
-	returns: sys_id of the found record or false if it does not exist
-	*/
-	findFolder: function(name, parent) {
-		var folder_gr = new GlideRecord(this.folder_tbl);
-		folder_gr.addQuery('name', name);
-		folder_gr.addQuery('parent', parent);
-		folder_gr.query();
-		
-		if(folder_gr.next()) {
-			return folder_gr;
-		} else {
-			return false;
-		}
-	},
-	
-	
-	getActiveVersion: function(fileObj) {
-		var fileVersionGR = new GlideRecord(this.version_tbl);
-		fileVersionGR.addQuery('file', fileObj.sys_id);
-		fileVersionGR.addQuery('active', true);
-		fileVersionGR.query();
-		
-		if(fileVersionGR.next()) {
-			return fileVersionGR;
-		} else {
-			return false;
-		}
-	},
-	
-	getAttachments: function(fileVersionGR) {
-		var attachmentGR = new GlideRecord('sys_attachment');
-		attachmentGR.addQuery('table_sys_id', fileVersionGR.sys_id);
-		attachmentGR.query();
+  //---------------------------------
+  //! File Object
+  //!   name - string
+  //!   type - record table name
+  //!   sys_id - record sys_id
+  //!   parentID - sys_id of parent
+  //!   parentName - name of parent
+  //---------------------------------
 
-		if (attachmentGR.next()) {
-			return attachmentGR.sys_id.toString();
-		} else {
-			return false;
-		}
+  createFileObjectFromGlideRecord: function(fileGR) {
+    var tableName = fileGR.getTableName();
 
-	},
-	createFileAndFoldersBase64: function(tableName, recordID, fileName, encodedPDF) {
-			gs.info('---> [{0}] 3. Inside Function', [new GlideDateTime().getNumericValue()]);  
-		
-		var returnedPath = this.getPath(tableName, recordID);
-			gs.info('---> [{0}] 4. returnedPath ' + returnedPath, [new GlideDateTime().getNumericValue()]);  
-		
-		var folderObj = this.createPath(returnedPath);
-			folderObj = folderObj[folderObj.length - 1];
-			gs.info('---> [{0}] 5. folderObj ' + folderObj, [new GlideDateTime().getNumericValue()]);  
-		
-		var versionID = this.searchForDuplicate(folderObj, fileName);
-		
-		if (!versionID) {
-			versionID = this.createFile(folderObj, fileName);
-			gs.info('---> [{0}] 6. versionSys ' + versionID, [new GlideDateTime().getNumericValue()]);			
-		} else {
-			//var version = this.
-		}	
-		
-		var versionGR = new GlideRecord(this.version_tbl);
-		versionGR.get(versionID);
-		
-		
-			gs.info('---> [{0}] 7. parms ' + 
-					'versionObj ' + versionGR +
-					'fileName' + fileName, [new GlideDateTime().getNumericValue()]);
-		
-		var sysattach = new GlideSysAttachment();
-		sysattach.writeBase64(versionGR, fileName, 'application/pdf', encodedPDF);
-		return "Attachment Created";
-	},
-	
-	searchForDuplicate: function(folderObj, fileName) {
-		var folder_gr = new GlideRecord(this.folder_tbl);
-		folder_gr.get(folderObj.sys_id);
-		
-		var file = new GlideRecord(this.file_tbl);
-		if (file.get("name", fileName)) {
-			return file;
-		} else {
-			return false;
-		}		
-	},
-	
-    type: 'DocManagerUtil'
-};]]></script>
+    switch(tableName) {
+      case this.file_tbl:
+        return this.fileGrConstructor(fileGR);
+      case this.folder_tbl:
+        return this.folderGrConstructor(fileGR);
+    }
+  },
+
+  fileGrConstructor: function(fileGR) {
+
+    var activeFile = this.getActiveVersion(fileGR);
+
+    return {
+        name: fileGR.name.toString(),
+        sys_id: fileGR.sys_id.toString(),
+        type: fileGR.getTableName(),
+        parentID: fileGR.folder.toString() ? fileGR.folder.toString() : "Home",
+        parentName: fileGR.folder.name.toString(),
+        activeApprovalStatus: activeFile.state.toString(),
+        activeApprovalSubStatus: activeFile.substate.toString()
+      };
+  },
+
+  folderGrConstructor: function(fileGR) {
+    return {
+        name: fileGR.name.toString(),
+        sys_id: fileGR.sys_id.toString(),
+        type: fileGR.getTableName(),
+        parentID: fileGR.parent.toString() ? fileGR.parent.toString() : "Home",
+        parentName: fileGR.parent.name.toString()
+      };
+  },
+
+  getAllFilesAndFolders: function() {
+    var foldersTree = [];
+
+    var foldersGR = new GlideRecord(this.folder_tbl);
+    foldersGR.query();
+
+    while (foldersGR.next()) {
+      foldersTree.push(this.folderGrConstructor(foldersGR));
+    }
+
+    var filesGR = new GlideRecord(this.file_tbl);
+    filesGR.query();
+
+    while (filesGR.next()) {
+      foldersTree.push(this.fileGrConstructor(filesGR));
+    }
+
+    return foldersTree;
+  },
+
+  /* 
+  name: getPath
+  purpose: to get the path
+  input:  table - table of the current record
+      sys_id - sys_id of the current record
+  returns: an array of the path [grandparent, parent, child]
+  */
+  getPath: function(table, sys_id) {
+    var gr = new GlideRecord(table);
+    gr.get(sys_id);
+
+    var mapping = new GlideRecord(this.mapping_tbl);
+    mapping.addQuery('table', table);
+    mapping.query();
+
+    var path = [];
+    if (mapping.next()) {
+      var startingElement = gr.getElement(mapping.value);
+      var startingRecord = {
+        name : startingElement + "",
+        sys_id : gr.sys_id + "",
+        tableName : gr.getTableName()
+      };
+      path.unshift(startingRecord);
+      var fields = mapping.parent_field.split(',');
+      var values = mapping.parent_value.split(',');
+      var element = '';
+      for (var i = 0; i < fields.length; i++) {
+    var currentElement = gr.getElement(element + fields[i]);
+        element += fields[i] + '.';
+        var record = {
+          name : gr.getElement(element + values[i]) + "",
+          sys_id : currentElement.sys_id + "",
+          tableName : currentElement.getReferenceTable()
+        };
+        path.unshift(record);
+      }
+    }
+    return path;
+  },
+
+  /*
+  name: createPath
+  purpose: check if the given path exists, create one if it does not exist by default(can be overridden)
+  input:  path - array of names in the path EX. [grandparent, parent, child]
+      override(optional) - if this is false don't create folders that dont exist
+  returns: json array of folder contents {name, sys_id, type, files}
+  */
+  createPath: function(path, override) {
+    var create = true;
+    if (override == false && override != null) {
+      create = false;
+    }
+
+    if (path.length == 0) {
+      return false;
+    }
+    var folders = [];
+
+    var parent = this.findFolder(path[0].name, null);
+    if (parent == false && create) {
+      parent = this.createFolder(path[0], null);
+    }
+
+    var folder = {
+      name: path[0].name,
+      sys_id: parent.sys_id.toString(),
+      type: this.folder_tbl,
+      parentID: parent.parent.toString(),
+      parentName: parent.parent.name.toString(),
+      files: []
+    };
+    if (folder.parentID == "") {
+      folder.parentID = "Home";
+    }
+    folders.push(folder);
+
+    for (var i = 0; i < path.length - 1; i++) {
+      var child = path[i + 1];
+      var childGR = this.findFolder(child.name, parent.sys_id.toString());
+      if (childGR == false && create) {
+        childGR = this.createFolder(child, parent.sys_id.toString());
+      }
+      parent = childGR;
+      folder = {
+        name: child.name,
+        sys_id: childGR.sys_id.toString(),
+        parentID: childGR.parent.toString(),
+        parentName: childGR.parent.name.toString(),
+        type: this.folder_tbl,
+        files: []
+      };
+      if (folder.parentID == "") {
+        folder.parentID = "Home";
+      }
+      folders.push(folder);
+    }
+    return folders;
+  },
+
+  /* 
+  name: createFolder
+  purpose: create a new record on the folder table (x_teth_crm_folders)
+  input:  name - name of folder as a string
+      parent - sys_id of parent (aka reference value)
+  returns: sys_id of the created record
+  */
+  createFolder: function(record, parent) {
+    var folder_gr = new GlideRecord(this.folder_tbl);
+    folder_gr.initialize();
+    folder_gr.name = record.name;
+    folder_gr.parent = parent;
+    folder_gr.record_table = record.tableName;
+    folder_gr.record_id = record.sys_id;
+    var newFolder = folder_gr.insert();
+    return folder_gr;
+  },
+
+  /* 
+  name: findFolder
+  purpose: determine if record on the folder table exists
+  input:  name - name of folder as a string
+      parent - sys_id of parent (aka reference value)
+  returns: folder_gr GlideRecord
+  */
+  findFolder: function(name, parent) {
+    var folder_gr = new GlideRecord(this.folder_tbl);
+    folder_gr.addQuery('name', name);
+    folder_gr.addQuery('parent', parent);
+    folder_gr.query();
+
+    if (folder_gr.next()) {
+      return folder_gr;
+    } else {
+      return false;
+    }
+  },
+
+  /*
+  name: renameFile
+  purpose: rename the file or folder
+  input:  file -  the file or folder {name, sys_id, type}
+      newname - new name for the file or folder
+  returns: true or false
+  */
+  renameFile: function(file, newname) {
+    var file_gr = new GlideRecord(file.type);
+    file_gr.addQuery('sys_id', file.sys_id);
+    file_gr.query();
+    if (file_gr.next()) {
+      file_gr.name = newname;
+      file_gr.update();
+      return true;
+    }
+    return false;
+  },
+
+  /*
+  name: getFolderContents
+  purpose: get the contents in the current folder
+  input: fileObject
+  returns: array of fileObject contents
+  */
+  getFolderContents: function(mainFolder) {
+    var folders = this.getFoldersInFolder(mainFolder);
+    var files = this.getFolderFiles(mainFolder);
+    var allFiles = folders.concat(files);
+
+    allFiles.forEach(this.addHomeToBlankParents);
+
+    return allFiles;
+  },
+
+  addHomeToBlankParents: function(file) {
+    if (file.parentID == "") 
+      file.parentID = "Home";    
+  },
+
+  /*
+  name: getFolderFiles
+  purpose: to return all the files in the folder
+  input: folder - folder obj {name, sys_id, type, files[]}
+  returns: json array of folder contents {name, sys_id, type}
+  */
+  getFolderFiles: function(folder) {
+    var fileGR = new GlideRecord(this.file_tbl);
+    fileGR.addQuery('folder', folder.sys_id);
+    fileGR.query();
+
+    var files = [];
+    while (fileGR.next()) {    
+    
+      var readableBoolean = this.docPermissions.checkReadFileSecurity(fileGR);
+      if(!readableBoolean) 
+        continue;
+
+      files.push(this.fileGrConstructor(fileGR));
+    }
+    return files;
+  },
+
+  /* 
+   *  name: getFoldersInFolder
+   *  purpose: Return all folders contained in folder argument
+   *  input: fileObject
+   *  returns: Array of folders as fileObjects
+   */
+  getFoldersInFolder: function(mainFolder) {
+    var foldersGR = new GlideRecord(this.folder_tbl);
+    foldersGR.addQuery("parent", mainFolder.sys_id);
+    foldersGR.query();
+
+    var folders = [];
+    while (foldersGR.next()) {
+
+      var readableBoolean = this.docPermissions.checkReadFolderSecurity(foldersGR);
+      if(!readableBoolean) 
+        continue;
+      
+      folders.push(this.folderGrConstructor(foldersGR));
+    }
+
+    return folders;
+  },
+
+  /*
+  name: moveItem
+  purpose: move the item to the correct folder
+  input:  src - source folder obj  {name, sys_id, type}
+      target - the obj to be moved from the src to the dest file/folder  {name, sys_id, type}/{name, sys_id, type, files[]}
+      dest - the destination folder
+  returns: updated source obj
+  */
+  moveItem: function(src, target, dest) {
+    if (target.type == this.folder_tbl) {
+      this.moveFolder(target, dest);
+    } else if (target.type == this.file_tbl) {
+      this.moveFile(target, dest);
+    } else {
+      return false;
+    }
+    return this.getFolderContents(src);
+  },
+
+  /*
+  name: moveFolder
+  purpose: move a folder to a different parent folder
+  input:  folder - folder obj to be moved {name, sys_id, type, files[]}
+      dest - destination folder{name, sys_id, type, files[]}
+  returns: true/false
+  */
+  moveFolder: function(folder, dest) {
+    var folderGR = new GlideRecord(this.folder_tbl);
+    folderGR.get(folder.sys_id);
+
+    folderGR.parent = dest.sys_id;
+    folderGR.update();
+    return true;
+  },
+
+  /*
+  name: moveFile
+  purpose: move a file to a different parent folder
+  input:  file - file object {name, sys_id, type}
+      dest - destination folder obj {name, sys_id, type, files[]}
+  returns: true/false
+  */
+  moveFile: function(file, dest) {
+    var fileGR = new GlideRecord(this.file_tbl);
+    fileGR.get(file.sys_id);
+
+    fileGR.folder = dest.sys_id;
+    fileGR.update();
+    return true;
+  },
+
+  /*
+  name: deleteItem
+  purpose: delete the file/folder and all of its contents
+  input: file/folder  {name, sys_id, type}/{name, sys_id, type, files[]}
+  returns: true/false
+  */
+  deleteItem: function(item) {
+    if (item.type == this.folder_tbl) {
+      this.deleteFolder(item);
+    } else if (item.type == this.file_tbl) {
+      this.deleteFile(item);
+    } else {
+      return false;
+    }
+    return true;
+  },
+
+  /*
+  name: deleteFolder
+  purpose: delete the folder and all of its contents
+  input: folder - object of the folder
+  returns: true/false
+  */
+  deleteFolder: function(folder) {
+    var folderGR = new GlideRecord(this.folder_tbl);
+    folderGR.get(folder.sys_id);
+
+    var files = this.getFolderFiles(folder);
+    files.forEach(this.deleteFile.bind(this));
+
+    var folders = this.getFoldersInFolder(folder);
+    folders.forEach(this.deleteFolder.bind(this));
+
+    folderGR.deleteRecord();
+    return true;
+  },
+
+  /*
+  name: deleteFile
+  purpose: to remove an attached doc
+  input:  name - name of the doc
+      path - array of names in the path EX. [grandparent, parent, child]
+  returns: false if not found or the number of records deleted
+  */
+  deleteFile: function(file) {
+
+    var file_gr = new GlideRecord(this.file_tbl);
+    file_gr.get(file.sys_id);
+
+    var version = new GlideRecord(this.version_tbl);
+    version.addQuery('file', file.sys_id);
+    version.deleteMultiple();
+
+    file_gr.deleteRecord();
+
+    return true;
+  },
+
+  /* 
+  name: createFile
+  purpose: create a new file and file version
+  input:  folder - json obj of the folder {name, sys_id, type, files[]}
+      filename - the name of the file to be created
+  returns: sys_id of the version
+  */
+  createFile: function(folder, filename) {
+
+    var folder_gr = new GlideRecord(this.folder_tbl);
+    folder_gr.get(folder.sys_id);
+
+    var fileGR = new GlideRecord(this.file_tbl);
+    fileGR.initialize();
+    fileGR.name = filename;
+    fileGR.type = this.file_tbl;
+    fileGR.folder = folder.sys_id;
+    var file_sys = fileGR.insert();
+
+
+
+    var file = {
+      name: fileGR.name.toString(),
+      sys_id: file_sys,
+      type: this.file_tbl,
+      parentID: fileGR.folder.sys_id.toString(),
+      parentName: fileGR.folder.name.toString()
+    };
+
+    var version_sys = this.createVersion(file);
+
+    return version_sys;
+  },
+
+  /*
+  name: CreateVersion
+  purpose: add new version of a file and deactivate old version
+  input:  file - file object {name, sys_id, type}
+      doc - the attachment
+  returns: sys_id of version or false
+  */
+  createVersion: function(file) {
+    var version = new GlideRecord(this.version_tbl);
+    version.addActiveQuery();
+    version.addQuery('file', file.sys_id);
+    version.query();
+
+    if (version.next()) {
+      version.active = false;
+      version.update();
+    }
+    var newVersion = new GlideRecord(this.version_tbl);
+    newVersion.initialize();
+    newVersion.active = true;
+    newVersion.file = file.sys_id;
+    var version_sys = newVersion.insert();
+
+    return version_sys;
+  },
+  /* 
+   *  name: getActiveVersion
+   *  purpose: Returns active version of specified file
+   *  input: fileObject
+   *  returns: Returns active version as GlideRecord
+   */
+  getActiveVersion: function(fileObj) {
+    var fileVersionGR = new GlideRecord(this.version_tbl);
+    fileVersionGR.addQuery('file', fileObj.sys_id);
+    fileVersionGR.addQuery('active', true);
+    fileVersionGR.query();
+
+    if (fileVersionGR.next()) {
+      return fileVersionGR;
+    } else {
+      return false;
+    }
+  },
+
+  getAttachments: function(fileVersionGR) {
+    var attachmentGR = new GlideRecord('sys_attachment');
+    attachmentGR.addQuery('table_sys_id', fileVersionGR.sys_id);
+    attachmentGR.query();
+
+    if (attachmentGR.next()) {
+      return attachmentGR.sys_id.toString();
+    } else {
+      return false;
+    }
+
+  },
+
+  /* 
+   *  name: createFileAndFoldersBase64
+   *  purpose: Creates a new file and attaches to a file record
+   *  input:
+   *    o tableName  - Name of table from current record
+   *    o recordID   - Sys_ID of current record
+   *    o fileName   - Name of file to create
+   *    o encodedPDF - PDF file created of jsPDF 
+   *  returns: null
+   *
+   * To Use:  var docMgt = new DocManager2();  
+   *          docMgt.createFileAndFoldersBase64("x_teth_crm_quote", sysid, filename, encodedPDF);
+   */
+  createFileAndFoldersBase64: function(tableName, recordID, fileName, encodedPDF) {
+
+    var returnedPath = this.getPath(tableName, recordID);
+
+    var folderObj = this.createPath(returnedPath);
+    folderObj = folderObj[folderObj.length - 1];
+
+    var versionID = this.searchForDuplicate(folderObj, fileName);
+
+    if (!versionID) {
+      versionID = this.createFile(folderObj, fileName);
+    } else {
+      //var version = this.
+    }
+
+    var versionGR = new GlideRecord(this.version_tbl);
+    versionGR.get(versionID);
+
+    var sysattach = new GlideSysAttachment();
+    sysattach.writeBase64(versionGR, fileName, 'application/pdf', encodedPDF);
+    return "Attachment Created";
+  },
+
+  /* 
+   *  name: searchForDuplicate
+   *  purpose: Searches folder to see if file already exists
+   *  input: folderObject, fileName (String)
+   *  returns: Returns file GlideRecord or false if not found
+   */
+  searchForDuplicate: function(folderObj, fileName) {
+    var folder_gr = new GlideRecord(this.folder_tbl);
+    folder_gr.get(folderObj.sys_id);
+
+    var file = new GlideRecord(this.file_tbl);
+    if (file.get("name", fileName)) {
+      return file;
+    } else {
+      return false;
+    }
+  },
+
+  sendForApproval: function(fileVersionObj) {
+    var versionGR = new GlideRecord(this.version_tbl);
+    versionGR.get(fileVersionObj.sys_id);
+
+    var approvalsGR = new GlideRecord(this.documentConditionsTable);
+    approvalsGR.addQuery("approval_table", versionGR.file.folder.record_table);
+    approvalsGR.orderBy('order');
+    approvalsGR.query();
+
+    while (approvalsGR.next()) {
+      if (GlideFilter.checkRecord(versionGR, approvalsGR.table_conditions) == true) {
+        versionGR.setValue("state", "Internal Approval");
+        versionGR.setValue("substate", "Pending Approval");
+        versionGR.setValue("approver", approvalsGR.approver);
+        versionGR.update();
+        return;
+      }
+    }
+
+    versionGR.setValue("substate", "Internal Approved");
+    versionGR.update();
+  },
+
+  triggerInternalApprovalProcess: function(fileObj) {
+    var fileVersion = this.getActiveVersion(fileObj);
+    fileVersion.state = "Internal Approval";
+    fileVersion.update();
+  },
+  
+  triggerDocuSignProcess: function(fileObj) {
+  var fileVersion = this.getActiveVersion(fileObj);
+  fileVersion.state = "DocuSign Signatures";
+  fileVersion.update();
+  },
+
+  
+
+  type: 'DocManagerUtil'
+};  ]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>mark.carter</sys_created_by>
         <sys_created_on>2017-08-01 12:09:22</sys_created_on>
         <sys_id>8da47afd0f940700eee8059ce1050ecc</sys_id>
-        <sys_mod_count>27</sys_mod_count>
+        <sys_mod_count>96</sys_mod_count>
         <sys_name>DocManagerUtil</sys_name>
         <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
         <sys_update_name>sys_script_include_8da47afd0f940700eee8059ce1050ecc</sys_update_name>
-        <sys_updated_by>vince.taggio</sys_updated_by>
-        <sys_updated_on>2017-08-03 19:25:47</sys_updated_on>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-11 18:25:34</sys_updated_on>
     </sys_script_include>
 </record_update>

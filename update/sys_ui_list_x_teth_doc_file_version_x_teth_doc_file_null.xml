@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_list parent="x_teth_doc_file" relationship="" sys_domain="global" table="x_teth_doc_file_version" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>file</element>
+            <list_id display_value="x_teth_doc_file_version" element="NULL" name="x_teth_doc_file_version" parent="x_teth_doc_file" relationship="NULL" sys_domain="global" view="Default view">11c9fa084fa4c3006fd477e18110c781</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-08 12:16:53</sys_created_on>
+            <sys_id>95c9fa084fa4c3006fd477e18110c781</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-08 12:16:53</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>active</element>
+            <list_id display_value="x_teth_doc_file_version" element="NULL" name="x_teth_doc_file_version" parent="x_teth_doc_file" relationship="NULL" sys_domain="global" view="Default view">11c9fa084fa4c3006fd477e18110c781</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-08 12:16:53</sys_created_on>
+            <sys_id>19c9fa084fa4c3006fd477e18110c781</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-08 12:16:53</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_created_on</element>
+            <list_id display_value="x_teth_doc_file_version" element="NULL" name="x_teth_doc_file_version" parent="x_teth_doc_file" relationship="NULL" sys_domain="global" view="Default view">11c9fa084fa4c3006fd477e18110c781</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-08 12:16:53</sys_created_on>
+            <sys_id>99c9fa084fa4c3006fd477e18110c781</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-08 12:16:53</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_created_by</element>
+            <list_id display_value="x_teth_doc_file_version" element="NULL" name="x_teth_doc_file_version" parent="x_teth_doc_file" relationship="NULL" sys_domain="global" view="Default view">11c9fa084fa4c3006fd477e18110c781</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-08 12:16:53</sys_created_on>
+            <sys_id>1dc9fa084fa4c3006fd477e18110c781</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-08 12:16:53</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_teth_doc_file_version</name>
+            <parent>x_teth_doc_file</parent>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-08 12:16:53</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>11c9fa084fa4c3006fd477e18110c781</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_teth_doc_file_version</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_ui_list_x_teth_doc_file_version_x_teth_doc_file_null</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-08 12:16:53</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

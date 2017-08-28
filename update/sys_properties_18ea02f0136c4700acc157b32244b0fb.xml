@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Integrator used in Docusign Integration</description>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_teth_doc.docusign.cred.key</name>
+        <read_roles/>
+        <suffix>docusign.cred.key</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>mark.carter</sys_created_by>
+        <sys_created_on>2017-08-10 16:47:27</sys_created_on>
+        <sys_id>18ea02f0136c4700acc157b32244b0fb</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>x_teth_doc.docusign.cred.key</sys_name>
+        <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+        <sys_update_name>sys_properties_18ea02f0136c4700acc157b32244b0fb</sys_update_name>
+        <sys_updated_by>mark.carter</sys_updated_by>
+        <sys_updated_on>2017-08-10 18:26:15</sys_updated_on>
+        <type>string</type>
+        <value>7dbf3f18-6cba-4c75-a714-98592894f829</value>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=18ea02f0136c4700acc157b32244b0fb"/>
+</record_update>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_related sys_domain="global" table="x_teth_doc_file_version" version="2" view="">
+        <sys_ui_related_list_entry action="INSERT_OR_UPDATE">
+            <filter/>
+            <list_id display_value="File Version - Default view" name="x_teth_doc_file_version" related_list="NULL" sys_domain="global" view="Default view">888d1e8d13248700acc157b32244b0b3</list_id>
+            <order_by/>
+            <position>0</position>
+            <related_list>REL:a36d1a8d13248700acc157b32244b03c</related_list>
+            <sys_class_name>sys_ui_related_list_entry</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 12:47:17</sys_created_on>
+            <sys_id>448d1e8d13248700acc157b32244b0b4</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 12:47:17</sys_updated_on>
+        </sys_ui_related_list_entry>
+        <sys_ui_related_list_entry action="INSERT_OR_UPDATE">
+            <filter/>
+            <list_id display_value="File Version - Default view" name="x_teth_doc_file_version" related_list="NULL" sys_domain="global" view="Default view">888d1e8d13248700acc157b32244b0b3</list_id>
+            <order_by/>
+            <position>1</position>
+            <related_list>REL:4ec8da78136c4700acc157b32244b0b7</related_list>
+            <sys_class_name>sys_ui_related_list_entry</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 12:47:17</sys_created_on>
+            <sys_id>4c8d1e8d13248700acc157b32244b0b4</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 12:47:17</sys_updated_on>
+        </sys_ui_related_list_entry>
+        <sys_ui_related_list action="INSERT_OR_UPDATE">
+            <calculated_name>File Version - Default view</calculated_name>
+            <filter/>
+            <name>x_teth_doc_file_version</name>
+            <order_by/>
+            <position/>
+            <related_list/>
+            <sys_class_name>sys_ui_related_list</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-11 12:47:17</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>888d1e8d13248700acc157b32244b0b3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>File Version - Default view</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_ui_related_x_teth_doc_file_version_null</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 12:47:17</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_related_list>
+    </sys_ui_related>
+</record_update>

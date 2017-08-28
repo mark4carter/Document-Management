@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="state" table="x_teth_doc_file_version" version="3">
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Internal Approval</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>0</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:19:31</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>224b913813e84700acc157b32244b0ec</sys_id>
+            <sys_mod_count>2</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:08:06</sys_updated_on>
+            <value>Internal Approval</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>DocuSign Signatures</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>1</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:19:31</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>a24b913813e84700acc157b32244b0ed</sys_id>
+            <sys_mod_count>2</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-11 14:08:23</sys_updated_on>
+            <value>DocuSign Signatures</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Approved</label>
+            <language>en</language>
+            <name>x_teth_doc_file_version</name>
+            <sequence>2</sequence>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:50:11</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>7b42ed7c13e84700acc157b32244b0c0</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:50:11</sys_updated_on>
+            <value>Approved</value>
+        </sys_choice>
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>state</element>
+            <name>x_teth_doc_file_version</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:19:31</sys_created_on>
+            <sys_id>6e4b913813e84700acc157b32244b0ec</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>state</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_choice_x_teth_doc_file_version_state</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:19:31</sys_updated_on>
+        </sys_choice_set>
+    </sys_choice>
+</record_update>

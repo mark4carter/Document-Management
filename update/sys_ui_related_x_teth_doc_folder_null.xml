@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_related sys_domain="global" table="x_teth_doc_folder" version="2" view="">
+        <sys_ui_related_list_entry action="INSERT_OR_UPDATE">
+            <filter/>
+            <list_id display_value="Folder - Default view" name="x_teth_doc_folder" related_list="NULL" sys_domain="global" view="Default view">34b0f974132c4700acc157b32244b0a8</list_id>
+            <order_by/>
+            <position>0</position>
+            <related_list>x_teth_doc_file.folder</related_list>
+            <sys_class_name>sys_ui_related_list_entry</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 14:53:04</sys_created_on>
+            <sys_id>fcb0f974132c4700acc157b32244b0a8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 14:53:04</sys_updated_on>
+        </sys_ui_related_list_entry>
+        <sys_ui_related_list_entry action="INSERT_OR_UPDATE">
+            <filter/>
+            <list_id display_value="Folder - Default view" name="x_teth_doc_folder" related_list="NULL" sys_domain="global" view="Default view">34b0f974132c4700acc157b32244b0a8</list_id>
+            <order_by/>
+            <position>1</position>
+            <related_list>x_teth_doc_folder_permission.folder</related_list>
+            <sys_class_name>sys_ui_related_list_entry</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 14:53:04</sys_created_on>
+            <sys_id>f4b0f974132c4700acc157b32244b0a9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 14:53:04</sys_updated_on>
+        </sys_ui_related_list_entry>
+        <sys_ui_related_list action="INSERT_OR_UPDATE">
+            <calculated_name>Folder - Default view</calculated_name>
+            <filter/>
+            <name>x_teth_doc_folder</name>
+            <order_by/>
+            <position/>
+            <related_list/>
+            <sys_class_name>sys_ui_related_list</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 14:53:04</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>34b0f974132c4700acc157b32244b0a8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Folder - Default view</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_ui_related_x_teth_doc_folder_null</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 14:53:04</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_related_list>
+    </sys_ui_related>
+</record_update>

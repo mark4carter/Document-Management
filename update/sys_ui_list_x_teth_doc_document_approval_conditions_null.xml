@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="x_teth_doc_document_approval_conditions" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>approval_table</element>
+            <list_id display_value="x_teth_doc_document_approval_conditions" element="NULL" name="x_teth_doc_document_approval_conditions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">efee513c13e84700acc157b32244b03e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:35:26</sys_created_on>
+            <sys_id>6bee513c13e84700acc157b32244b03f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:35:26</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>approver</element>
+            <list_id display_value="x_teth_doc_document_approval_conditions" element="NULL" name="x_teth_doc_document_approval_conditions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">efee513c13e84700acc157b32244b03e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:35:26</sys_created_on>
+            <sys_id>efee513c13e84700acc157b32244b03f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:35:26</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>order</element>
+            <list_id display_value="x_teth_doc_document_approval_conditions" element="NULL" name="x_teth_doc_document_approval_conditions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">efee513c13e84700acc157b32244b03e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:35:26</sys_created_on>
+            <sys_id>63ee513c13e84700acc157b32244b040</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:35:26</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>table_conditions</element>
+            <list_id display_value="x_teth_doc_document_approval_conditions" element="NULL" name="x_teth_doc_document_approval_conditions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">efee513c13e84700acc157b32244b03e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:35:26</sys_created_on>
+            <sys_id>e3ee513c13e84700acc157b32244b040</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:35:26</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_teth_doc_document_approval_conditions</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>mark.carter</sys_created_by>
+            <sys_created_on>2017-08-10 13:35:26</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>efee513c13e84700acc157b32244b03e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_teth_doc_document_approval_conditions</sys_name>
+            <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
+            <sys_update_name>sys_ui_list_x_teth_doc_document_approval_conditions_null</sys_update_name>
+            <sys_updated_by>mark.carter</sys_updated_by>
+            <sys_updated_on>2017-08-10 13:35:26</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>
