@@ -5,22 +5,22 @@
         <license_condition/>
         <license_model>none</license_model>
         <license_roles/>
-        <name>x_teth_doc_folder_permission</name>
+        <name>x_teth_doc_docusign_document_approval</name>
         <op_delete>true</op_delete>
         <op_insert>true</op_insert>
         <op_update>true</op_update>
         <owner_condition/>
         <sys_class_name>ua_table_licensing_config</sys_class_name>
         <sys_created_by>mark.carter</sys_created_by>
-        <sys_created_on>2017-08-08 21:36:11</sys_created_on>
-        <sys_id>d2c93c90132c0700acc157b32244b0ce</sys_id>
+        <sys_created_on>2017-08-10 13:33:45</sys_created_on>
+        <sys_id>ebcb4e2e137ccf00acc157b32244b00d</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>x_teth_doc_folder_permission</sys_name>
+        <sys_name>x_teth_doc_docusign_document_approval</sys_name>
         <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
         <sys_policy/>
         <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
-        <sys_update_name>ua_table_licensing_config_d2c93c90132c0700acc157b32244b0ce</sys_update_name>
+        <sys_update_name>ua_table_licensing_config_ebcb4e2e137ccf00acc157b32244b00d</sys_update_name>
         <sys_updated_by>mark.carter</sys_updated_by>
-        <sys_updated_on>2017-08-08 21:36:11</sys_updated_on>
+        <sys_updated_on>2017-08-10 13:33:45</sys_updated_on>
     </ua_table_licensing_config>
 </record_update>

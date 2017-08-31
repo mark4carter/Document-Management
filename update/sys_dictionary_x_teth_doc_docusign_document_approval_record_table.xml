@@ -52,15 +52,15 @@
         <sys_class_name>sys_dictionary</sys_class_name>
         <sys_created_by>mark.carter</sys_created_by>
         <sys_created_on>2017-08-11 10:45:36</sys_created_on>
-        <sys_id>5681ca8113248700acc157b32244b01d</sys_id>
+        <sys_id>6bcb4e2e137ccf00acc157b32244b003</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>Record Table</sys_name>
         <sys_package display_value="TP13 - Document Management" source="x_teth_doc">9e11f6f90f940700eee8059ce1050eb0</sys_package>
         <sys_policy/>
         <sys_scope display_value="TP13 - Document Management">9e11f6f90f940700eee8059ce1050eb0</sys_scope>
         <sys_update_name>sys_dictionary_x_teth_doc_docusign_document_approval_record_table</sys_update_name>
-        <sys_updated_by>mark.carter</sys_updated_by>
-        <sys_updated_on>2017-08-11 10:45:36</sys_updated_on>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2017-08-28 13:36:38</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

@@ -6,5 +6,8 @@
         <element label="Record Table" max_length="80" name="record_table" type="table_name"/>
         <element label="Response" max_length="4000" name="response" type="string"/>
         <element label="Status" max_length="60" name="status" type="string"/>
+        <index name="index">
+            <element name="record_id"/>
+        </index>
     </element>
 </database>
